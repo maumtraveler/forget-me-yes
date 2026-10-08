@@ -2,7 +2,11 @@
  const uid=()=>globalThis.crypto.randomUUID();
  const names=s=>s.split(/\s*(?:,|，|、|\n|이랑|랑|하고|그리고)\s*|\s+/).map(x=>x.trim()).filter(Boolean);
  function parseCommand(raw,places,current){
-  let text=raw.trim().replace(/[.!?。]+$/,'');
+  let text=raw.trim().replace(/[.!?。]+$/,'').trim();
+  const createCategory=text.match(/^(.+?)\s*카테고리\s*(?:를|을)?\s*(?:만들어|생성해|추가해)\s*(?:줘|주세요)?$/);
+  if(createCategory)return {type:'category',name:createCategory[1].trim()};
+  const deleteCategory=text.match(/^(.+?)\s*카테고리\s*(?:를|을)?\s*(?:삭제(?:해)?|지워)\s*(?:줘|주세요)?$/);
+  if(deleteCategory){const name=deleteCategory[1].trim(),p=places.find(p=>p.name===name);return {type:'delete-category',place:p?p.id:null};}
   const editAction=/(?:수정|변경)\s*(?:해\s*(?:줘|주세요)|해|하기)?$|바꿔\s*(?:줘|주세요)?$/;
   const categoryRename=text.match(/^(.+?)\s*카테고리(?:의)?\s*(?:이름(?:을|를)?\s*)?(?:를|을)?\s*(.+?)(?:으로|로)\s*(?:(?:수정|변경)\s*해\s*(?:줘|주세요)|바꿔\s*(?:줘|주세요))$/);
   if(categoryRename&&!/카테고리\s*에/.test(text)){const oldName=categoryRename[1].trim(),newName=categoryRename[2].trim();const p=places.find(p=>p.name===oldName);return {type:'rename-category',place:p?p.id:null,oldName,newName};}
@@ -22,6 +26,8 @@
    const unknown=bareUnknown||text.match(/^.+?(?:\s*카테고리\s*)?(?:에서|에다가|에는|에)\s+/);
    if(unknown){explicit=true;text=text.slice(unknown[0].length);}
   }
+  text=text.replace(/^준비물\s*(?:을|를)?\s*/, '');
+  if(explicit&&!target)return {type:'unknown-category'};
   if(editAction.test(text)){
    const body=text.replace(editAction,'').trim().replace(/^(?:있는|등록된)\s+/, '');
    const match=body.match(/^(.+?)(?:을|를)\s+(.+?)(?:으로|로)$/)||body.match(/^(.+?)\s+(.+?)(?:으로|로)$/);
@@ -33,11 +39,8 @@
   if(/삭제|지워|빼줘|수정|변경|바꿔/.test(text))return {type:'invalid-edit'};
   text=text.replace(/\s*(?:(?:추가|등록)\s*(?:시켜\s*(?:줘|주세요)|해\s*(?:줘|주세요)|해|하기)?|넣어\s*(?:줘|주세요))$/,'').trim();
   const clean=s=>s.trim().replace(/(?:준비물(?:을|를)?|을|를)$/,'').trim();
-  // Separators preserve multiword names; protect common compound names in space-separated lists.
-  const compounds=['휴대폰 충전기','핸드폰 충전기','노트북 충전기','보조 배터리','등산 스틱','등산 장갑','목욕 타월','마른 수건','여벌 옷','차 키','집 카드키'];
-  let parts;
-  if(/,|，|、|\n|이랑|랑|하고|그리고/.test(text))parts=text.split(/\s*(?:,|，|、|\n|이랑|랑|하고|그리고)\s*/);
-  else {text=clean(text);for(const phrase of compounds)text=text.split(phrase).join(phrase.replace(/ /g,'\u00a0'));parts=text.split(/ +/).map(s=>s.replace(/\u00a0/g,' '));}
+  // 공백은 물건 이름의 일부이며, 쉼표(또는 음성으로 말한 '쉼표')로만 분리한다.
+  const parts=text.split(/\s*(?:,|，|、|\n|쉼표)\s*/);
   return {type:'items',place:target||(explicit?null:current),names:[...new Set(parts.map(clean).filter(Boolean))]};
  }
  function isDeleteAll(query){

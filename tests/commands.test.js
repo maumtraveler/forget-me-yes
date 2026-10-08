@@ -1,0 +1,21 @@
+const assert=require('assert');
+require('../model.js');
+const M=global.ChecklistModel;
+const places=[{id:'pool',name:'수영장'},{id:'trip',name:'여행'}];
+const parse=s=>M.parseCommand(s,places,null);
+let count=0;
+function check(s,expected){assert.deepStrictEqual(parse(s),expected,s);count++;}
+['수영장 카테고리 만들어줘','수영장 카테고리 만들어 줘','수영장 카테고리 만들어 주세요.','수영장 카테고리를 생성해줘','수영장카테고리 추가해 주세요'].forEach(s=>check(s,{type:'category',name:'수영장'}));
+['수영장 카테고리에 준비물 수영 모자, 수영 안경, 샤워 타올 추가해줘','수영장에 수영 모자,수영 안경,샤워 타올 등록해 주세요','수영장 카테고리에 준비물을 수영 모자 쉼표 수영 안경 쉼표 샤워 타올 추가해 줘'].forEach(s=>check(s,{type:'items',place:'pool',names:['수영 모자','수영 안경','샤워 타올']}));
+check('수영장에 화장품 파우치 추가해줘',{type:'items',place:'pool',names:['화장품 파우치']});
+check('수영장에 수건, 수건 추가해줘',{type:'items',place:'pool',names:['수건']});
+check('없는곳 카테고리에 수건 추가해줘',{type:'unknown-category'});
+['수영장에 수영 모자를 수영모로 수정해줘','수영장 카테고리에서 수영 모자를 수영모로 바꿔 주세요'].forEach(s=>check(s,{type:'edit',place:'pool',oldName:'수영 모자',newName:'수영모'}));
+check('수영장 카테고리를 실내 수영으로 바꿔줘',{type:'rename-category',place:'pool',oldName:'수영장',newName:'실내 수영'});
+check('수영장에 수영 모자, 수영 안경 삭제해줘',{type:'delete',place:'pool',query:'수영 모자, 수영 안경'});
+check('수영장 카테고리 삭제해줘',{type:'delete-category',place:'pool'});
+const items=[{id:'1',name:'수영 모자'},{id:'2',name:'수영 안경'},{id:'3',name:'샤워 타올'}];
+assert.deepStrictEqual(M.matchDeletion('수영 모자, 수영 안경',items),{ids:['1','2'],missing:[]});
+assert.deepStrictEqual(M.matchDeletion('수영 모자, 없는 물건',items),{ids:['1'],missing:['없는 물건']});
+assert.strictEqual(M.isDeleteAll('준비물 모두'),true);
+console.log(`${count+3}개 명령 테스트 통과`);

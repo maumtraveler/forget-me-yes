@@ -77,8 +77,14 @@ function editByCommand(id,command){
  modal(E.commandEdit,'<p>'+esc(p.name)+'<br>'+esc(E.renamePreview)+'<br>'+esc(item.name)+' → '+esc(command.newName)+(isShared(item)?'<br>'+esc(C.packing.sharedHint):'')+'</p>',()=>{item.name=command.newName;save();close();render();notify(C.messages.saved);});
 }
 function locationCommand(raw){const s=raw.trim().replace(/[.!?。]+$/,'');const del=s.match(/^(.+?)(?:을|를)?\s*(?:삭제|지워|빼)(?:해줘|해주세요)?$/);if(del){const item=data.locations.find(x=>x.name===del[1].trim());if(!item)return notify(E.notFound);return confirmDialog(`${item.name}\n${item.location}\n${E.deleteTargets}`,()=>{data.locations=data.locations.filter(x=>x!==item);});}const edit=s.match(/^(.+?)(?:을|를)\s+(.+?)(?:으로|로)\s*(?:수정|변경)(?:해줘|해주세요)?$/);if(edit){const item=data.locations.find(x=>x.name===edit[1].trim());if(!item)return notify(E.notFound);return objectEditor(item,{...item,name:edit[2].trim()});}const parsed=M.parseLocation(raw);if(!parsed.name||!parsed.location)return notify(C.messages.chooseLocation);const category=filter!=='all'?filter:(data.locationCategories[0]?.id||'');const existing=data.locations.find(x=>x.name===parsed.name);if(existing){existing.location=parsed.location;existing.locationCategory=existing.locationCategory||category;existing.updated=new Date().toISOString();}else data.locations.push({id:uid(),name:parsed.name,location:parsed.location,locationCategory:category,memo:'',updated:new Date().toISOString()});save();render();notify(C.messages.saved);}
-function processCommand(raw){if(!raw.trim())return;if(page==='locations'){locationCommand(raw);return;}
+function processCommand(raw){if(!raw.trim())return;
 const command=M.parseCommand(raw,data.places,page==='detail'?selected:null);
+if(page==='locations'&&!['category','rename-category','delete-category'].includes(command.type)){locationCommand(raw);return;}
+if(command.type==='unknown-category')return notify('해당 카테고리가 없어요. 먼저 카테고리를 만들어주세요.');
+if(command.type==='delete-category'){
+ const p=data.places.find(x=>x.id===command.place);if(!p)return notify(E.notFound);
+ return confirmDialog(p.name+'\n'+E.deleteCategory,()=>{data.places=data.places.filter(x=>x!==p);data.recent=data.recent.filter(id=>id!==p.id);if(selected===p.id){selected=null;page='packing';}});
+}
 if(command.type==='invalid-edit')return notify(E.invalidEdit);
 if(command.type==='rename-category'){
  const p=data.places.find(x=>x.id===command.place);
