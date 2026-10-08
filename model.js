@@ -77,6 +77,13 @@
    data.finalDefaults=true;
   }
   data.common=data.common||[];data.locations=data.locations||[];data.checks=data.checks||{};
+  if(!data.packingDefaultsV1){
+   const addMissing=(list,names,category)=>{names.forEach(name=>{if(!list.some(i=>i.name===name))list.push({id:uid(),name,category,checked:false});});};
+   addMissing(data.common,C.defaults.common,'@common');
+   data.places.forEach(p=>{p.items=p.items||[];addMissing(p.items,(C.defaults.placeItems||{})[p.name]||[],C.defaults.base);if(p.items.some(i=>i.category===C.defaults.base)&&p.groups&&!p.groups.includes(C.defaults.base))p.groups.push(C.defaults.base);});
+   data.places=data.places.filter(p=>!['캠핑','출장'].includes(p.name)||p.items.length||(p.groups||[]).length);
+   data.packingDefaultsV1=true;
+  }
   data.places.forEach(p=>{p.hiddenCommon=Array.isArray(p.hiddenCommon)?p.hiddenCommon:[];});
   const iconFor=n=>/등산/.test(n)?'mountain':/여행/.test(n)?'plane':/출장/.test(n)?'case':/캠핑/.test(n)?'tent':/수영|운동/.test(n)?'water':/외출/.test(n)?'shopping':'bag';
   data.places.forEach(p=>{
