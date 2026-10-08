@@ -94,6 +94,20 @@
    p.groups=p.groups||[...new Set([...order,...from])].filter(n=>n!==C.packing.shared&&n!=='공통 필수품');
    p.items.forEach(i=>{i.category=i.category||i.group||C.defaults.base;});
   });
+  if(!data.travelGroupsV1){
+   const travel=data.places.find(p=>p.name==='여행');
+   if(travel){
+    travel.items=travel.items.filter(i=>!(i.category===C.defaults.base&&['옷','세면도구'].includes(i.name)));
+    const groups=Object.keys(C.travelGroups||{});
+    travel.groups=[...groups,...travel.groups.filter(g=>!groups.includes(g))];
+    groups.forEach(category=>C.travelGroups[category].forEach(name=>{
+     const existing=travel.items.find(i=>i.name===name);
+     if(existing)existing.category=category;
+     else travel.items.push({id:uid(),name,category,checked:false});
+    }));
+   }
+   data.travelGroupsV1=true;
+  }
   data.locationCategories=data.locationCategories||C.defaults.locationCategories.map(name=>({id:uid(),name}));
   if(!data.locationCategoryCleanup){
    const legacy=data.locationCategories.find(c=>c.name==='필수 물건 관리');
