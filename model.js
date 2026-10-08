@@ -147,6 +147,7 @@
  function applyTemplate(data,name,templates){
   const template=templates.find(t=>t.aliases.includes(name));
   if(!template)return null;
+  name=template.name||name;
   let p=data.places.find(p=>p.name===name);
   if(!p){p={id:uid(),name,icon:template.icon,items:[],groups:[]};data.places.push(p);}
   p.items=p.items||[];p.groups=p.groups||[];let added=0;

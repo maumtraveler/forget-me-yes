@@ -34,4 +34,7 @@ C.packingTemplates.forEach(t=>{
  assert.strictEqual(JSON.stringify(data),before);
 });
 const unknown={places:[],common:[]};assert.strictEqual(M.applyTemplate(unknown,'우주정거장',C.packingTemplates),null);assert.strictEqual(unknown.places.length,0);
-console.log('4종 기본 목록 생성·재요청·체크 보존·미지원 장소 검증 통과');
+const camping={places:[],common:[]};const camp=M.applyTemplate(camping,'캠프',C.packingTemplates);
+assert.strictEqual(camp.place.name,'캠핑');assert.strictEqual(camp.added,18);
+assert.strictEqual(M.applyTemplate(camping,'캠핑',C.packingTemplates).added,0);assert.strictEqual(camping.places.length,1);
+console.log('5종 기본 목록 및 캠핑 별칭·중복 방지 검증 통과');
