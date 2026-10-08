@@ -1,0 +1,1 @@
+setInterval(()=>{const n=document.querySelector('.aside-note'),m=document.getElementById('locationMenu');if(n&&m&&n.previousElementSibling!==m)n.before(m)},100);

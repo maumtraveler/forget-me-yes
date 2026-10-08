@@ -1,0 +1,11 @@
+.place-nav>button[data-action="common"]{justify-content:flex-start;text-align:left;font-size:14px;font-weight:400;padding:8px 14px;min-height:40px}
+.place-nav>button[data-action="common"] .icon{display:none}
+.location-header,.location-row{grid-template-columns:1.8fr 1.6fr .7fr .9fr .4fr 70px;column-gap:10px}
+.location-row>button[data-action="delete-object"],.location-row>button[data-action="edit-object"]{margin-left:0}
+.hide-common-button{position:relative}.hide-common-button::before{content:none}
+.eye-note{color:#718b7b;font-size:13px}.item-row.hidden-common{opacity:.48;background:#f5f6f2}.item-row.hidden-common label span{text-decoration:line-through;color:#89958c}.item-row.hidden-common input{cursor:not-allowed}
+.shared-hint{display:flex;justify-content:space-between;align-items:center;gap:12px}.shared-hint::after{content:none}
+.location-row>button[data-action="delete-object"]{grid-column:6;grid-row:1/4;justify-self:start}.location-row>button[data-action="edit-object"]{grid-column:6;grid-row:1/4;justify-self:end}
+@media(max-width:760px){.location-row{grid-template-columns:1fr 42px 42px}.location-row>button{grid-row:1/4}.location-row>button[data-action="delete-object"]{grid-column:2}.location-row>button[data-action="edit-object"]{grid-column:3}}
+
+.shared-hint-action{display:inline-flex;align-items:center;justify-self:end;gap:5px;color:#8a968c;font-size:12px;white-space:nowrap}.shared-hint-action .icon{width:15px;height:15px;opacity:.9}
