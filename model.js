@@ -110,6 +110,15 @@
   if(!data.finalLocationDefaults){C.defaults.locationCategories.forEach(name=>{if(!data.locationCategories.some(c=>c.name===name))data.locationCategories.push({id:uid(),name});});data.finalLocationDefaults=true;}
   if(!data.locationCategories.length&&data.locations.length)data.locationCategories.push({id:uid(),name:C.defaults.locationCategories[0]});
   data.locations.forEach(i=>{if(!data.locationCategories.some(c=>c.id===i.locationCategory))i.locationCategory=data.locationCategories[0].id;i.memo=i.memo||'';});
+  if(!data.locationSamplesV1){
+   (C.locationSamples||[]).forEach(sample=>{
+    if(data.locations.some(i=>i.name===sample.name))return;
+    let category=data.locationCategories.find(c=>c.name===sample.category);
+    if(!category){category={id:uid(),name:sample.category};data.locationCategories.push(category);}
+    data.locations.push({id:uid(),name:sample.name,location:sample.location,locationCategory:category.id,memo:'',updated:new Date().toISOString()});
+   });
+   data.locationSamplesV1=true;
+  }
   data.recent=data.recent||[];data.schema=2;return data;
  }
  root.ChecklistModel={uid,parseCommand,isDeleteAll,matchDeletion,parseLocation,migrate};
