@@ -12,6 +12,15 @@
 
 .hero .hero-brand-message{display:flex;flex-direction:column;gap:3px;font-family:'Gowun Dodum','Noto Sans KR',sans-serif;font-size:24px;font-weight:600;line-height:1.55;color:var(--ink);margin:22px 0 16px;max-width:100%;letter-spacing:0}
 .hero-brand-message span{display:block}
+.home-input-example{margin-bottom:6px}
+.command-examples{margin:0 2px 24px;color:var(--muted);font-size:13px;line-height:1.75}
+.command-examples summary{cursor:pointer;width:fit-content;padding:8px 0;color:var(--green)}
+.command-examples summary:focus-visible{outline:3px solid #8aab95;outline-offset:3px;border-radius:4px}
+.command-examples-body{margin-top:6px;padding:14px 16px;background:#f5f7f1;border:1px solid var(--line);border-radius:12px}
+.command-examples-body p{margin:0 0 12px}.command-examples-body p:last-child{margin-bottom:0}
+.command-examples-body strong,.command-examples-body span{display:block}.command-examples-body strong{font-weight:500;color:var(--ink)}
+.command-examples-body .command-hint{font-size:12px}
+@media(max-width:760px){.home-input-example{margin-bottom:4px}.command-examples{font-size:12px}.command-examples summary{min-height:44px;display:list-item;padding:10px 0}}
 
 @media(max-width:760px){
  main{padding:26px 20px calc(94px + env(safe-area-inset-bottom))}
