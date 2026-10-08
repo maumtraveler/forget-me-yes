@@ -14,13 +14,17 @@
 .hero-brand-message span{display:block}
 .home-input-example{margin-bottom:6px}
 .command-examples{margin:0 2px 24px;color:var(--muted);font-size:13px;line-height:1.75}
-.command-examples summary{cursor:pointer;width:fit-content;padding:8px 0;color:var(--green)}
+.command-examples summary{cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px;width:fit-content;max-width:100%;margin-left:auto;padding:9px 14px;color:var(--green);background:#f5f7f1;border:1px solid var(--line);border-radius:12px;font-weight:500;line-height:1.5;list-style:none;transition:background .15s,border-color .15s}
+.command-examples summary::-webkit-details-marker{display:none}
+.command-examples summary::after{content:'';width:6px;height:6px;border-right:1.5px solid currentColor;border-bottom:1.5px solid currentColor;transform:rotate(45deg);margin-top:-3px;transition:transform .15s}
+.command-examples[open] summary::after{transform:rotate(225deg);margin-top:3px}
+.command-examples summary:hover{background:#edf2e8;border-color:#b6c8b9}
 .command-examples summary:focus-visible{outline:3px solid #8aab95;outline-offset:3px;border-radius:4px}
 .command-examples-body{margin-top:6px;padding:14px 16px;background:#f5f7f1;border:1px solid var(--line);border-radius:12px}
 .command-examples-body p{margin:0 0 12px}.command-examples-body p:last-child{margin-bottom:0}
 .command-examples-body strong,.command-examples-body span{display:block}.command-examples-body strong{font-weight:500;color:var(--ink)}
 .command-examples-body .command-hint{font-size:12px}
-@media(max-width:760px){.home-input-example{margin-bottom:4px}.command-examples{font-size:12px}.command-examples summary{min-height:44px;display:list-item;padding:10px 0}}
+@media(max-width:760px){.command-examples{font-size:12px}.command-examples summary{min-height:44px;padding:10px 14px}}
 
 @media(max-width:760px){
  main{padding:26px 20px calc(94px + env(safe-area-inset-bottom))}
@@ -35,6 +39,7 @@
  .command-form{border-radius:18px;padding:6px 7px 6px 14px;box-shadow:0 4px 16px #233d2908}
  .command-form input{font-size:14px;min-height:42px}
  .input-example{font-size:11px;line-height:1.8;margin:10px 2px 24px}
+ .home-input-example{margin-bottom:8px}
  .recent{margin-top:26px}.recent h3{font-size:16px;margin-bottom:10px}
  .chips{gap:8px}.chip{font-size:12px;border-radius:12px;padding:8px 12px;background:#f2f5ed}
  .entry-cards{gap:12px;margin-top:20px}
