@@ -19,3 +19,19 @@ assert.deepStrictEqual(M.matchDeletion('수영 모자, 수영 안경',items),{id
 assert.deepStrictEqual(M.matchDeletion('수영 모자, 없는 물건',items),{ids:['1'],missing:['없는 물건']});
 assert.strictEqual(M.isDeleteAll('준비물 모두'),true);
 console.log(`${count+3}개 명령 테스트 통과`);
+global.window={};global.document={};global.crypto={randomUUID:()=>require('crypto').randomBytes(16).toString('hex')};
+require('../copy.js');
+const C=window.COPY;
+['수영장 카테고리 만들고 기본 준비물 세팅해줘','수영장 카테고리를 만들고 그 안에 기본 준비물 카테고리와 기본 준비물 세팅해줘','수영장에 기본 준비물 설정해 주세요','수영장 기본 준비물 추천해줘'].forEach(s=>check(s,{type:'template',name:'수영장'}));
+assert.deepStrictEqual(M.parseCommand('기본 준비물 세팅해줘',places,'pool'),{type:'template',name:'수영장'});
+C.packingTemplates.forEach(t=>{
+ const data={places:[],common:[{name:'물병'}]};
+ const result=M.applyTemplate(data,t.aliases[0],C.packingTemplates);
+ assert(result.added>0);assert.deepStrictEqual(result.place.groups,Object.keys(t.groups));
+ result.place.items[0].checked=true;
+ const before=JSON.stringify(data);
+ assert.strictEqual(M.applyTemplate(data,t.aliases[0],C.packingTemplates).added,0);
+ assert.strictEqual(JSON.stringify(data),before);
+});
+const unknown={places:[],common:[]};assert.strictEqual(M.applyTemplate(unknown,'우주정거장',C.packingTemplates),null);assert.strictEqual(unknown.places.length,0);
+console.log('4종 기본 목록 생성·재요청·체크 보존·미지원 장소 검증 통과');

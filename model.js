@@ -3,6 +3,12 @@
  const names=s=>s.split(/\s*(?:,|，|、|\n|이랑|랑|하고|그리고)\s*|\s+/).map(x=>x.trim()).filter(Boolean);
  function parseCommand(raw,places,current){
   let text=raw.trim().replace(/[.!?。]+$/,'').trim();
+  if(/기본\s*준비물/.test(text)&&/(?:세팅|설정|채워|추천|만들|생성)/.test(text)){
+   const named=text.match(/^(.+?)\s*카테고리/);
+   const plain=text.match(/^(.+?)(?:에|의)?\s+기본\s*준비물/);
+   const selected=places.find(p=>p.id===current);
+   return {type:'template',name:named?named[1].trim():plain?plain[1].trim():selected?selected.name:''};
+  }
   const createCategory=text.match(/^(.+?)\s*카테고리\s*(?:를|을)?\s*(?:만들어|생성해|추가해)\s*(?:줘|주세요)?$/);
   if(createCategory)return {type:'category',name:createCategory[1].trim()};
   const deleteCategory=text.match(/^(.+?)\s*카테고리\s*(?:를|을)?\s*(?:삭제(?:해)?|지워)\s*(?:줘|주세요)?$/);
@@ -138,6 +144,21 @@
   }
   data.recent=data.recent||[];data.schema=2;return data;
  }
- root.ChecklistModel={uid,parseCommand,isDeleteAll,matchDeletion,parseLocation,migrate};
+ function applyTemplate(data,name,templates){
+  const template=templates.find(t=>t.aliases.includes(name));
+  if(!template)return null;
+  let p=data.places.find(p=>p.name===name);
+  if(!p){p={id:uid(),name,icon:template.icon,items:[],groups:[]};data.places.push(p);}
+  p.items=p.items||[];p.groups=p.groups||[];let added=0;
+  Object.keys(template.groups).forEach(category=>{
+   if(!p.groups.includes(category))p.groups.push(category);
+   template.groups[category].forEach(name=>{
+    if(p.items.some(i=>i.name===name)||data.common.some(i=>i.name===name))return;
+    p.items.push({id:uid(),name,category,checked:false});added++;
+   });
+  });
+  return {place:p,added};
+ }
+ root.ChecklistModel={uid,parseCommand,isDeleteAll,matchDeletion,parseLocation,migrate,applyTemplate};
 })(typeof window==='undefined'?globalThis:window);
 

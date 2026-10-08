@@ -79,6 +79,11 @@ function editByCommand(id,command){
 function locationCommand(raw){const s=raw.trim().replace(/[.!?。]+$/,'');const del=s.match(/^(.+?)(?:을|를)?\s*(?:삭제|지워|빼)(?:해줘|해주세요)?$/);if(del){const item=data.locations.find(x=>x.name===del[1].trim());if(!item)return notify(E.notFound);return confirmDialog(`${item.name}\n${item.location}\n${E.deleteTargets}`,()=>{data.locations=data.locations.filter(x=>x!==item);});}const edit=s.match(/^(.+?)(?:을|를)\s+(.+?)(?:으로|로)\s*(?:수정|변경)(?:해줘|해주세요)?$/);if(edit){const item=data.locations.find(x=>x.name===edit[1].trim());if(!item)return notify(E.notFound);return objectEditor(item,{...item,name:edit[2].trim()});}const parsed=M.parseLocation(raw);if(!parsed.name||!parsed.location)return notify(C.messages.chooseLocation);const category=filter!=='all'?filter:(data.locationCategories[0]?.id||'');const existing=data.locations.find(x=>x.name===parsed.name);if(existing){existing.location=parsed.location;existing.locationCategory=existing.locationCategory||category;existing.updated=new Date().toISOString();}else data.locations.push({id:uid(),name:parsed.name,location:parsed.location,locationCategory:category,memo:'',updated:new Date().toISOString()});save();render();notify(C.messages.saved);}
 function processCommand(raw){if(!raw.trim())return;
 const command=M.parseCommand(raw,data.places,page==='detail'?selected:null);
+if(command.type==='template'){
+ const result=M.applyTemplate(data,command.name,C.packingTemplates);
+ if(!result)return notify('기본 목록 지원: 수영장, 여행, 등산, 헬스장. 다른 장소는 직접 추가해주세요.');
+ save();navigate('detail',result.place.id);notify(result.added?'기본 준비물을 넣었어요. 필요에 맞게 수정해주세요.':'기본 준비물이 이미 있어요.');return;
+}
 if(page==='locations'&&!['category','rename-category','delete-category'].includes(command.type)){locationCommand(raw);return;}
 if(command.type==='unknown-category')return notify('해당 카테고리가 없어요. 먼저 카테고리를 만들어주세요.');
 if(command.type==='delete-category'){
