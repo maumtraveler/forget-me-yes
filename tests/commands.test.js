@@ -37,4 +37,5 @@ const unknown={places:[],common:[]};assert.strictEqual(M.applyTemplate(unknown,'
 const camping={places:[],common:[]};const camp=M.applyTemplate(camping,'캠프',C.packingTemplates);
 assert.strictEqual(camp.place.name,'캠핑');assert.strictEqual(camp.added,18);
 assert.strictEqual(M.applyTemplate(camping,'캠핑',C.packingTemplates).added,0);assert.strictEqual(camping.places.length,1);
-console.log('5종 기본 목록 및 캠핑 별칭·중복 방지 검증 통과');
+check('출장 기본 준비물 세팅해줘',{type:'template',name:'출장'});
+console.log('6종 기본 목록 및 캠핑 별칭·출장 명령·중복 방지 검증 통과');

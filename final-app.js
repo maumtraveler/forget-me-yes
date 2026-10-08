@@ -81,7 +81,7 @@ function processCommand(raw){if(!raw.trim())return;
 const command=M.parseCommand(raw,data.places,page==='detail'?selected:null);
 if(command.type==='template'){
  const result=M.applyTemplate(data,command.name,C.packingTemplates);
- if(!result)return notify('기본 목록 지원: 수영장, 여행, 등산, 헬스장, 캠핑. 다른 장소는 직접 추가해주세요.');
+ if(!result)return notify('기본 목록 지원: 수영장, 여행, 등산, 헬스장, 캠핑, 출장. 다른 장소는 직접 추가해주세요.');
  save();navigate('detail',result.place.id);notify(result.added?'기본 준비물을 넣었어요. 필요에 맞게 수정해주세요.':'기본 준비물이 이미 있어요.');return;
 }
 if(page==='locations'&&!['category','rename-category','delete-category'].includes(command.type)){locationCommand(raw);return;}
