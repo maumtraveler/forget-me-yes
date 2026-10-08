@@ -9,3 +9,6 @@
 @media(max-width:760px){.location-row{grid-template-columns:1fr 42px 42px}.location-row>button{grid-row:1/4}.location-row>button[data-action="delete-object"]{grid-column:2}.location-row>button[data-action="edit-object"]{grid-column:3}}
 
 .shared-hint-action{display:inline-flex;align-items:center;justify-self:end;gap:5px;color:#8a968c;font-size:12px;white-space:nowrap}.shared-hint-action .icon{width:15px;height:15px;opacity:.9}
+
+.hero .hero-brand-english{font-family:'Gowun Dodum','Noto Sans KR',sans-serif;font-size:17px;font-weight:600;letter-spacing:.08em;line-height:1.4;color:var(--green);margin:0 0 10px;white-space:nowrap}
+@media(max-width:760px){.hero .hero-brand-english{font-size:14px;letter-spacing:.06em;margin-bottom:8px}}
