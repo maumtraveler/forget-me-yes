@@ -152,6 +152,6 @@ function commonPage(){const p=place()||data.places[0];const list=data.common;con
 function applyHiddenCommonState(){const p=place();if(!p)return;const hidden=new Set(p.hiddenCommon||[]);document.querySelectorAll('.item-row[data-id]').forEach(row=>{const is=hidden.has(row.dataset.id)&&row.querySelector('[data-action="hide-common"]');if(!is)return;row.classList.toggle('hidden-common',true);const cb=row.querySelector('input[type="checkbox"]');if(cb)cb.disabled=true;});}
 const hiddenObserver=new MutationObserver(()=>applyHiddenCommonState());hiddenObserver.observe(document.querySelector('#app'),{childList:true,subtree:true});
 const homeWithoutEnglishBrand=home;
-home=function(){return homeWithoutEnglishBrand().replace('<h1>',`<p class="hero-brand-english" lang="en">${esc(C.brand.englishName)}</p><h1>`);};
+home=function(){return homeWithoutEnglishBrand().replace('</h1>',`</h1><p class="hero-brand-english" lang="en">${esc(C.brand.englishName)}</p>`);};
 render();applyHiddenCommonState();if(storageError)notify(C.messages.corrupt);else save();
 })();
