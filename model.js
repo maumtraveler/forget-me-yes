@@ -94,7 +94,11 @@
    data.packingDefaultsV1=true;
   }
   data.places.forEach(p=>{p.hiddenCommon=Array.isArray(p.hiddenCommon)?p.hiddenCommon:[];});
-  const iconFor=n=>/등산/.test(n)?'mountain':/여행/.test(n)?'plane':/출장/.test(n)?'case':/캠핑/.test(n)?'tent':/수영|운동/.test(n)?'water':/외출/.test(n)?'shopping':'bag';
+  const iconFor=n=>n==='논산 본원행'?'home':/등산/.test(n)?'mountain':/여행/.test(n)?'plane':/출장/.test(n)?'case':/캠핑/.test(n)?'tent':/수영|운동/.test(n)?'water':/외출/.test(n)?'shopping':'bag';
+  if(!data.bonHomeIconV1){
+   data.places.forEach(p=>{if(p.name==='논산 본원행'&&(!p.icon||p.icon==='bag'))p.icon='home';});
+   data.bonHomeIconV1=true;
+  }
   data.places.forEach(p=>{
    p.icon=p.icon||iconFor(p.name);p.items=p.items||[];
    const tree=(data.categoryTrees||{})[p.id]||[];
